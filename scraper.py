@@ -19,7 +19,7 @@ def packet_callback(packet):
         tcp = packet[TCP]
         ip = packet[IP]
 
-        if tcp.dport == 22 and tcp.flags == 'S':
+        if tcp.dport == 22 or tcp.flags == 'S':
             src_ip = ip.src
             now = datetime.now()
             attempts[src_ip].append(now)
@@ -29,7 +29,7 @@ def packet_callback(packet):
             ]
 
             if len(attempts[src_ip]) >= THRESH and src_ip not in blocklist:
-                print(f"[ALERT] {src_ip} made {THRESH} SSH attempts in under 1 minute.")
+                print(f"[ALERT] {src_ip} made {THRESH} attempts in under 1 minute.")
                 block_ip(src_ip)
 
 sniffer = AsyncSniffer(filter="tcp port 22", prn=packet_callback, store=False)
