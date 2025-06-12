@@ -14,7 +14,7 @@ def block_ip(ip):
         subprocess.run(["iptables", "-A", "INPUT", "-s", ip, "-p", "tcp", "--dport", "22", "-j", "DROP"])
         blocklist.add(ip)
 
-def packet_callback(packet):
+def packet_window(packet):
     if packet.haslayer(TCP) and packet.haslayer(IP):
         tcp = packet[TCP]
         ip = packet[IP]
